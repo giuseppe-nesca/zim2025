@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI Terminal Simulation</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            font-family: monospace;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #terminal {
+            width: 80%;
+            height: 60%;
+            background-color: #000000;
+            border: 1px solid #444;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        #output {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        #input-line {
+            display: flex;
+        }
+
+        #prompt {
+            margin-right: 0.5rem;
+        }
+
+        #input {
+            background: none;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: inherit;
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+<div id="terminal">
+    <div id="output"></div>
+    <div id="input-line">
+        <span id="prompt">user@cli:~$</span>
+        <input id="input" type="text" autofocus/>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById('input');
+    const output = document.getElementById('output');
+    const prompt = document.getElementById('prompt').textContent;
+    let entering_password = false;
+    let admin_mode = false;
+
+    input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+
+            const command = input.value.trim();
+            if (entering_password) {
+                if (command === "Z1m0s2025") {
+                    output.innerHTML += "Access Granted.\n";
+                    input.style.color = '#00ff00';
+                    output.style.color = '#00ff00';
+                    document.getElementById("prompt").style.color = '#00ff00';
+                    document.getElementById('prompt').textContent = "admin@cli:~$";
+                    admin_mode = true;
+                } else {
+                    output.innerHTML += "Access Denied: Incorrect Password.\n";
+                }
+                entering_password = false;
+                document.getElementById('prompt').style.display = '';
+                input.value = '';
+
+                return
+            }
+            output.innerHTML += `${prompt} ${command}\n`;
+
+
+
+            // Simulate response for certain commands
+            if (command === 'help') {
+                if (admin_mode) {
+                    output.innerHTML += "Available commands: help, clear, hello, secret-coordinates\n";
+                } else {
+                    output.innerHTML += "Available commands: help, clear, hello, admin\n";
+                }
+            } else if (command === 'hello') {
+                output.innerHTML += "Hello, Senku Carohhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh!\n";
+            } else if (command === 'clear') {
+                output.innerHTML = '';
+            } else if (command === 'secret-coordinates') {
+                if (admin_mode) {
+                    const coordinates = "Coordinates:\n Solar system, Earth, Europe, Italy, Taranto, Leporano Marina, via Magnolie 82, first floor.\n Do not freeze!"
+                    output.innerHTML += coordinates;
+                } else {
+                    output.innerHTML += `Command not found: ${command}\n`;
+                }
+            } else if (command === 'admin') {
+                output.innerHTML += 'Please enter the password:\n';
+                entering_password = true;
+
+                document.getElementById('prompt').style.display = 'none';
+            }
+            else if (command) {
+                output.innerHTML += `Command not found: ${command}\n`;
+            }
+
+            input.value = '';
+            // Scroll to the bottom
+            const terminal = document.getElementById('terminal');
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+    });
+</script>
+</body>
+</html>
